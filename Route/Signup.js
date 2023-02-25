@@ -1,6 +1,7 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import UserModel from "../db/User.js";
+import bycrypt from "bcrypt";
 
 const Router = express.Router();
 
@@ -28,9 +29,22 @@ Router.post(
         return res.status(400).json({error:"Sorry, Email Id is already in use, Please use different Email Id."})
       }
       // let user = new UserModel(req.body);
-      let result = await user.save();
-      res.send(result);
-      console.log(result);
+
+      //**** save method*** */
+      // let result = await user.save();
+      // res.send(result);
+      //******** */
+
+      //***********Using create method */
+
+      let  secPass = req.body.password
+      user = await UserModel.create({
+        name:req.body.name,
+        password:secPass,
+        email:req.body.email
+      });
+      res.json(user);
+    
     } catch (error) {
       console.log(error);
       res.status(500).json({
