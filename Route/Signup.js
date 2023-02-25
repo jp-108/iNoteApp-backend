@@ -2,6 +2,10 @@ import express from "express";
 import { body, validationResult } from "express-validator";
 import UserModel from "../db/User.js";
 import bycrypt from "bcrypt";
+import JWT from "jsonwebtoken";
+
+const JWT_SECRETE = "jay@123"
+
 
 const Router = express.Router();
 
@@ -36,14 +40,23 @@ Router.post(
       //******** */
 
       //***********Using create method */
+      const salt = await bycrypt.genSalt(10);
 
-      let  secPass = req.body.password
+      let  secPass = await bycrypt.hash(req.body.password,salt);
       user = await UserModel.create({
         name:req.body.name,
         password:secPass,
         email:req.body.email
       });
-      res.json(user);
+
+      const data = {
+        user:{
+          id:user.id
+        }
+      }
+      const authToken = JWT.sign(data, JWT_SECRETE);
+
+      res.json({authToken});
     
     } catch (error) {
       console.log(error);

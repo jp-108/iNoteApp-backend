@@ -19,7 +19,7 @@ app.get("/", async (req, res) => {
 });
 
 app.delete("/delete/:id", async (req, res) => {
-  let result = await UserModel.deleteOne({ _id: req.params.id });
+  let result = await UserModel.deleteMany({ name: req.params.id });
   res.send(result);
 });
 
