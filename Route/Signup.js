@@ -17,15 +17,24 @@ Router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+
+    //Check whethere the user with this email already exist.
+
     try {
-      let user = new UserModel(req.body);
+
+      let user = await UserModel.findOne({email:req.body.email});
+  
+      if(user){
+        return res.status(400).json({error:"Sorry, Email Id is already in use, Please use different Email Id."})
+      }
+      // let user = new UserModel(req.body);
       let result = await user.save();
       res.send(result);
       console.log(result);
     } catch (error) {
       console.log(error);
-      res.send({
-        result: "Email has been already used",
+      res.status(500).json({
+        result: "some error occured",
         message: error.message,
       });
       next();
