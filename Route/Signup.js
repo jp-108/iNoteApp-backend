@@ -18,9 +18,10 @@ Router.post(
     }),
   ],
   async (req, res, next) => {
+    const success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({success, errors: errors.array() });
     }
 
     //Check whethere the user with this email already exist.
@@ -30,11 +31,11 @@ Router.post(
       let user = await UserModel.findOne({email:req.body.email});
   
       if(user){
-        return res.status(400).json({error:"Sorry, Email Id is already in use, Please use different Email Id."})
+        return res.status(400).json({success, error:"Sorry, Email Id is already in use, Please use different Email Id."})
       }
-      // let user = new UserModel(req.body);
-
+      
       //**** save method*** */
+      // let user = new UserModel(req.body);
       // let result = await user.save();
       // res.send(result);
       //******** */
@@ -56,11 +57,12 @@ Router.post(
       }
       const authToken = JWT.sign(data, JWT_SECRETE);
 
-      res.json({authToken});
+      res.json({success:true, authToken});
     
     } catch (error) {
       console.log(error);
       res.status(500).json({
+        success,
         result: "some error occured",
         message: error.message,
       });
