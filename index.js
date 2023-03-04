@@ -17,23 +17,4 @@ app.use("/route", Signup);
 app.use("/route", Login);
 app.use("/route", Notes)
 
-app.get("/", async (req, res) => {
-  let result = await UserModel.find(req.body);
-  res.send(result);
-  console.log(result);
-});
-
-app.delete("/delete/:id", async (req, res) => {
-  let result = await UserModel.deleteMany({ name: req.params.id });
-  res.send(result);
-});
-
-app.put("/update/:id", async (req, res) => {
-  let result = await UserModel.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  res.send(result);
-});
-
 app.listen(port);
